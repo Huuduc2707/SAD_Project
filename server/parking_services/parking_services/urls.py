@@ -21,16 +21,17 @@ from ninja_extra import NinjaExtraAPI
 
 #import api from apps
 from ninja_jwt.controller import NinjaJWTDefaultController
-from user.api import CustomerController
+from user.api import UserController
 from parking.api import (FloorController, VehicleTypeController
                         ,VehicleController, BankAccountController
                         ,ReservationController, CheckInController
-                        ,CheckOutController, BillController)
+                        ,CheckOutController, BillController,
+                        EmployeeController, ManageController)
 
 api = NinjaExtraAPI()
 
 api.register_controllers(
-    CustomerController,
+    UserController,
     FloorController,
     VehicleTypeController,
     VehicleController,
@@ -39,6 +40,8 @@ api.register_controllers(
     CheckInController,
     CheckOutController,
     BillController,
+    EmployeeController,
+    ManageController,
     
     NinjaJWTDefaultController,
     

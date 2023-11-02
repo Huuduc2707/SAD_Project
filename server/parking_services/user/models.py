@@ -27,7 +27,6 @@ class User(AbstractUser):
         MANAGER = "M", 'Manager'
         EMPLOYEE = "E", 'Employee'
         CUSTOMER = "C", 'Customer'
-
     
     uuid = models.UUIDField(unique=True, default=uuid4, editable=False)
     name = models.CharField(max_length=255, blank=True, null=True)

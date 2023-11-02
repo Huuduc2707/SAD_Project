@@ -7,14 +7,7 @@ from ninja_jwt.schema import TokenObtainPairInputSchema
 class UserSchema(ModelSchema):
     class Config:
         model = User
-        model_fields = ['uuid', 'username', 'email', 'name', 'phone_number']
-        
-class ErrorMsg(Schema):
-    msg: str
-
-class ConfirmationResponse(Schema):
-    status: bool
-    msg: str
+        model_fields = ['id', 'username', 'email', 'name', 'phone_number', 'role'] 
 
 class UserTokenResponse(Schema):
     refresh: str

@@ -2,8 +2,7 @@ from ninja import NinjaAPI, Router
 from ninja_extra import NinjaExtraAPI, api_controller, http_get, http_post, http_put
 from ninja_extra.exceptions import AuthenticationFailed
 from .models import User
-from .schema.response import (UserSchema, ErrorMsg, ConfirmationResponse, 
-                            UserTokenResponse, UserTokenObtainSchema)
+from .schema.response import (UserSchema,UserTokenResponse, UserTokenObtainSchema)
 from .schema.payload import (CustomerRegisterRequest, CustomerProfileRequest)
 from typing import List
 
@@ -16,22 +15,22 @@ from parking_services.exceptions import UsernameDuplication
 # profile(give jwt -> get info)
 # edit(give jwt, info -> return updated info)
 
-@api_controller('/customer', tags=['Customer'])
-class CustomerController:
+@api_controller('/user', tags=['User'])
+class UserController:
     
     @http_get('', response=UserSchema, auth=JWTAuth())
-    def get_customer(self, request):
+    def get_user(self, request):
         return request.user
     
     @http_post('/signup')
-    def sign_up_customer(self, request, payload: CustomerRegisterRequest):
+    def sign_up_user(self, request, payload: CustomerRegisterRequest):
         if User.customers.filter(username=payload.username).exists():
             raise UsernameDuplication()
         created_user = User.objects.create_user(**payload.dict())
         return True
 
     @http_post('/login', response=UserTokenResponse)
-    def login_customer(self, user_token: UserTokenObtainSchema):
+    def login_user(self, user_token: UserTokenObtainSchema):
         user_token.check_user_authentication_rule()
         return user_token.output_schema()
     

@@ -46,7 +46,6 @@ class CheckInIn(Schema):
     
 class CheckOutIn(Schema):
     vehicle_id: int
-    floor_id: int = None
     slot_id: int = None
     
 class BillIn(Schema):

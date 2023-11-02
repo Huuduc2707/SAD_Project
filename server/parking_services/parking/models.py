@@ -155,8 +155,13 @@ class CheckIn(models.Model):
         super().save(*args, **kwargs)
 
 class BankAccount(models.Model):
+    
+    class BankChoices(models.TextChoices):
+        VCB = 'VCB', "Vietcombank"
+        OCB = 'OCB', 'OCB'
 
-    bank_name = models.CharField(max_length=20,
+    bank_name = models.CharField(max_length=5,
+                                 choices=BankChoices.choices,
                                  null=False, 
                                  blank=False)
     

@@ -9,15 +9,20 @@ from .models import (ParkingFloor, ParkingSlot, VehicleType
 
 from .schema.response import (ParkingFloorOut, ParkingSlotOut, VehicleTypeOut,
                               VehicleOut, BankAccountOut, ReservationOut, CheckInOut,
-                              CheckOut, BillOut)
+                              CheckOut, BillOut, ReservationHistoryOut,
+                              CheckOutHistory, BillHistoryOut)
 from .schema.payload import (ParkingFloorIn, ParkingSlotIn, VehicleTypeIn,
                              VehicleIn, VehiclePut, BankAccountIn, BankAccountPut,
                              ReservationIn, CheckInIn, CheckOutIn, BillIn)
+
+from user.schema.response import UserSchema
+
 from typing import List
 
 from django.shortcuts import get_object_or_404
 
-from parking_services.exceptions import InvalidInformation, PlateNumberDuplication, NotFound, NoSlotAvailable
+from parking_services.exceptions import (InvalidInformation, PlateNumberDuplication,
+                                         NotFound, NoSlotAvailable)
 
 from parking_services.authenticate import ManagerCustomAuth
 
@@ -27,7 +32,7 @@ from django.utils import timezone
 
 
 
-@api_controller('/floors', tags=["Floor"], auth=ManagerCustomAuth())
+@api_controller('/floors', tags=["Floor"], auth=JWTAuth())
 class FloorController:
     @http_get('', response=List[ParkingFloorOut])
     def get_list_floor(self, request):
@@ -91,7 +96,7 @@ class FloorController:
         return True
 
 
-@api_controller('/vehicle_types', tags=["Vehicle Type"], auth=ManagerCustomAuth())
+@api_controller('/vehicle_types', tags=["Vehicle Type"], auth=JWTAuth())
 class VehicleTypeController:
     @http_get('', response=List[VehicleTypeOut])
     def get_list_vehicle_type(self, request):
@@ -251,6 +256,14 @@ class ReservationController:
     
 @api_controller('/checkin', tags=["Check In"], auth=JWTAuth())
 class CheckInController:
+    
+    @http_get('/{check_in_id}', response=CheckInOut)
+    def get_user_check_in(self, request, check_in_id:int):
+        return CheckIn.objects.filter(id=check_in_id)
+    
+    @http_get('', response=List[CheckInOut])
+    def get_all_user_check_in(self, request):
+        return CheckIn.objects.filter(user=request.user)
 
     @http_post('', response=CheckInOut)
     def check_in_user(self, request, payload: CheckInIn):
@@ -285,6 +298,13 @@ class CheckInController:
         
 @api_controller('/checkout', tags=["Check Out"], auth=JWTAuth())
 class CheckOutController:
+    
+    @http_get('', response=List[CheckOut])
+    def get_user_check_out_history(self, request):
+        try:
+            return CheckIn.objects.filter(user=request.user, time_out__isnull=False)
+        except:
+            raise InvalidInformation()
 
     @http_post('', response=CheckOut)
     def check_out_user(self, request, payload: CheckOutIn):
@@ -299,15 +319,19 @@ class CheckOutController:
             current_check_in.slot.status = ParkingSlot.SlotStatus.EMPTY
             current_check_in.time_out = timezone.now()
             current_check_in.fee = current_check_in.total_fee()
-            
+            current_check_in.slot.save()
             current_check_in.save()
             
             return current_check_in
         except:
             raise InvalidInformation()
         
-@api_controller('/pay', tags=["Pay Bill"], auth=JWTAuth())
+@api_controller('/bill', tags=["Pay Bill"], auth=JWTAuth())
 class BillController:
+    
+    @http_get('', response=List[BillOut])
+    def get_all_user_bill_history(self, request):
+        return Bill.objects.filter(user=request.user)
 
     @http_post('', response=BillOut)
     def pay_bill(self, request, payload: BillIn):
@@ -323,3 +347,25 @@ class BillController:
         except:
             raise InvalidInformation()
         
+
+@api_controller('/employee', tags=["Employees"], auth=JWTAuth())
+class EmployeeController:
+    
+    @http_get('', response=List[ReservationOut])
+    def get_all_employee(self, request):
+        return User.employees.all()
+    
+@api_controller('/manage', tags=["Manage"], auth=JWTAuth())
+class ManageController:
+    
+    @http_get('/reservation', response=List[ReservationHistoryOut])
+    def get_all_reservations(self, request):
+        return Reservation.objects.all()
+    
+    @http_get('/checkin', response=List[CheckOutHistory])
+    def get_all_checkin(self, request):
+        return CheckIn.objects.all()
+    
+    @http_get('/bill', response=List[BillHistoryOut])
+    def get_all_bill_history(self, request):
+        return Bill.objects.all()
