@@ -10,6 +10,7 @@ export default function EmployeeLayout({
   children: React.ReactNode;
 }) {
   const { user } = useUserStore();
+
   if (user?.role !== Role.Manager && user?.role !== Role.Employee) {
     return (
       <ErrorPage
