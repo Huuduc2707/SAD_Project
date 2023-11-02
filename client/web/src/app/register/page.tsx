@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthResponse, UserApiRegisterVariables, userApi } from "@/apis/user";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -10,8 +11,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -28,15 +32,38 @@ const formSchema = z.object({
   name: z.string().min(1, {
     message: "Name must be at least 1 character.",
   }),
+  phone_number: z.string().min(1, {
+    message: "Phone number must be at least 1 character.",
+  }),
 });
 
 export default function RegisterPage() {
+  const router = useRouter();
+
+  const mutation = useMutation<AuthResponse, Error, UserApiRegisterVariables>({
+    mutationFn: userApi.register,
+    onSuccess(data) {
+      toast({
+        title: "Registration successful",
+        description: `Welcome, ${data.user.name}!`,
+      });
+      router.replace("/");
+    },
+    onError(error) {
+      toast({
+        title: "Registration failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    mutation.mutate(values);
   }
 
   return (
@@ -105,7 +132,11 @@ export default function RegisterPage() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full mt-4">
+            <Button
+              type="submit"
+              className="w-full mt-4"
+              disabled={mutation.isPending}
+            >
               Submit
             </Button>
           </form>

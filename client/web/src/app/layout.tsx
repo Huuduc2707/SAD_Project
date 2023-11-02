@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { useUserStore } from "@/stores/user.store";
 import "@/styles/globals.css";
 import { Avatar } from "@radix-ui/react-avatar";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ParkingCircle } from "lucide-react";
 import { Inter as FontSans } from "next/font/google";
 import Link from "next/link";
@@ -85,6 +86,8 @@ const Navbar: React.FC = () => {
   );
 };
 
+const queryClient = new QueryClient();
+
 export default function RootLayout({
   children,
 }: {
@@ -99,15 +102,17 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Navbar />
-          <main>{children}</main>
-        </ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Navbar />
+            <main>{children}</main>
+          </ThemeProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

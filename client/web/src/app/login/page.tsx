@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthResponse, UserApiLoginVariables, userApi } from "@/apis/user";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -10,8 +11,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -25,6 +29,26 @@ const formSchema = z.object({
 });
 
 export default function LoginPage() {
+  const router = useRouter();
+
+  const mutation = useMutation<AuthResponse, Error, UserApiLoginVariables>({
+    mutationFn: userApi.login,
+    onSuccess(data) {
+      toast({
+        title: "Login successful",
+        description: `Welcome back, ${data.user.name}!`,
+      });
+      router.replace("/");
+    },
+    onError(error) {
+      toast({
+        title: "Login failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,7 +58,7 @@ export default function LoginPage() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    mutation.mutate(values);
   }
 
   return (
@@ -77,7 +101,11 @@ export default function LoginPage() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full mt-4">
+            <Button
+              type="submit"
+              className="w-full mt-4"
+              disabled={mutation.isPending}
+            >
               Submit
             </Button>
           </form>
