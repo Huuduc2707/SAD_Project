@@ -7,6 +7,7 @@ from .schema.payload import (CustomerRegisterRequest, CustomerProfileRequest)
 from typing import List
 
 from ninja_jwt.authentication import JWTAuth
+from parking_services.authenticate import get_tokens_for_user
 
 from parking_services.exceptions import UsernameDuplication
 
@@ -22,12 +23,14 @@ class UserController:
     def get_user(self, request):
         return request.user
     
-    @http_post('/signup')
+    @http_post('/signup', response= UserTokenResponse)
     def sign_up_user(self, request, payload: CustomerRegisterRequest):
         if User.customers.filter(username=payload.username).exists():
             raise UsernameDuplication()
         created_user = User.objects.create_user(**payload.dict())
-        return True
+        created_token = get_tokens_for_user(created_user)
+        created_token.update({'user': created_user})
+        return created_token
 
     @http_post('/login', response=UserTokenResponse)
     def login_user(self, user_token: UserTokenObtainSchema):
