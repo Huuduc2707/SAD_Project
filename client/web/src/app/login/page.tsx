@@ -1,6 +1,6 @@
 "use client";
 
-import { AuthResponse, UserApiLoginVariables, userApi } from "@/apis/user";
+import { userApi } from "@/apis/user";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -31,7 +31,7 @@ const formSchema = z.object({
 export default function LoginPage() {
   const router = useRouter();
 
-  const mutation = useMutation<AuthResponse, Error, UserApiLoginVariables>({
+  const mutation = useMutation({
     mutationFn: userApi.login,
     onSuccess(data) {
       toast({

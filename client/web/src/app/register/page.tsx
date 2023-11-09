@@ -1,6 +1,6 @@
 "use client";
 
-import { AuthResponse, UserApiRegisterVariables, userApi } from "@/apis/user";
+import { userApi } from "@/apis/user";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -40,8 +40,8 @@ const formSchema = z.object({
 export default function RegisterPage() {
   const router = useRouter();
 
-  const mutation = useMutation<AuthResponse, Error, UserApiRegisterVariables>({
-    mutationFn: userApi.register,
+  const mutation = useMutation({
+    mutationFn: userApi.signup,
     onSuccess(data) {
       toast({
         title: "Registration successful",

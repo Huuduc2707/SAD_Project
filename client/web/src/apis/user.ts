@@ -1,18 +1,18 @@
 import { User } from "@/types/user";
 import { baseApi } from "./base";
 
-export interface AuthResponse {
+export interface ApiUserTokenResponse {
   refresh: string;
   access: string;
   user: User;
 }
 
-export interface UserApiLoginVariables {
+export interface ApiUserLoginVariables {
   username: string;
   password: string;
 }
 
-export interface UserApiRegisterVariables {
+export interface ApiUserSignupVariables {
   username: string;
   password: string;
   email: string;
@@ -21,11 +21,11 @@ export interface UserApiRegisterVariables {
 }
 
 export const userApi = {
-  login(variables: UserApiLoginVariables) {
-    return baseApi.post<AuthResponse>("/api/user/login", variables);
+  login(variables: ApiUserLoginVariables) {
+    return baseApi.post<ApiUserTokenResponse>("/api/user/login", variables);
   },
-  register(variables: UserApiRegisterVariables) {
-    return baseApi.post<AuthResponse>("/api/user/signup", variables);
+  signup(variables: ApiUserSignupVariables) {
+    return baseApi.post<ApiUserTokenResponse>("/api/user/signup", variables);
   },
   getCurrentUser() {
     return baseApi.get<User>("/api/user");
