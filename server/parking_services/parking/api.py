@@ -36,6 +36,7 @@ from django.utils import timezone
 class FloorController:
     @http_get('', response=List[ParkingFloorOut])
     def get_list_floor(self, request):
+        Reservation.handle_conflict_reservation()
         return ParkingFloor.objects.all()
     
     @http_post('', response=ParkingFloorOut)
@@ -45,6 +46,11 @@ class FloorController:
             return created_floor
         except:
             raise InvalidInformation()
+        
+    @http_get('/{floor_id}', response=ParkingFloorOut)
+    def get_floor_by_id(self, request, floor_id:int):
+        Reservation.handle_conflict_reservation()
+        return get_object_or_404(ParkingFloor, id=floor_id)
         
     @http_put('/{floor_id}', response=ParkingFloorOut)
     def update_floor(self, request, floor_id: int, payload: ParkingFloorIn):
@@ -69,6 +75,7 @@ class FloorController:
         
     @http_get('/{floor_id}/slots', response=List[ParkingSlotOut], auth=JWTAuth())
     def get_list_slots(self, request, floor_id):
+        Reservation.handle_conflict_reservation()
         return ParkingSlot.objects.filter(floor=floor_id)
     
     @http_post('/{floor_id}/slots', response=ParkingSlotOut)
@@ -76,6 +83,11 @@ class FloorController:
         current_floor = get_object_or_404(ParkingFloor, pk=floor_id)
         created_slot = ParkingSlot.objects.create(floor=current_floor, **payload.dict())
         return created_slot
+    
+    @http_get('/{floor_id}/slots/{slot_id}', response=ParkingSlotOut, auth=JWTAuth())
+    def get_slot_by_id(self, request, floor_id, slot_id):
+        Reservation.handle_conflict_reservation()
+        return get_object_or_404(ParkingSlot, pk=slot_id)
     
     @http_put('/{floor_id}/slots/{slot_id}', response=ParkingSlotOut)
     def update_slot(self, request, floor_id: int, slot_id: int, payload: ParkingSlotIn):
@@ -109,6 +121,10 @@ class VehicleTypeController:
             return created_type
         except:
             raise InvalidInformation()
+        
+    @http_get('/{vehicle_type_id}', response=VehicleTypeOut)
+    def get_vehicle_type_by_id(self, request, vehicle_type_id: int):
+        return get_object_or_404(VehicleType, pk=vehicle_type_id)
         
     @http_put('/{vehicle_type_id}', response=VehicleTypeOut)
     def update_vehicle_type(self, request, vehicle_type_id: int, payload: VehicleTypeIn):
@@ -151,6 +167,10 @@ class VehicleController:
         except:
             raise InvalidInformation()
         
+    @http_get('/{vehicle_id}', response=VehicleOut)
+    def get_vehicle_by_id(self, request, vehicle_id: int):
+        return get_object_or_404(Vehicle, pk=vehicle_id)
+        
     @http_put('/{vehicle_id}', response=VehicleOut)
     def update_vehicle(self, request, vehicle_id: int, payload: VehiclePut):
         try:
@@ -191,7 +211,11 @@ class BankAccountController:
         except:
             raise InvalidInformation()
         
-    @http_put('/{bank_account_id}', response=BankAccountOut)
+    @http_get('/{bank_account_id}', response=BankAccountOut)
+    def get_bank_account_by_id(self, request, bank_account_id:int):
+        return get_object_or_404(BankAccount, pk=bank_account_id)
+        
+    @http_put('', response=BankAccountOut)
     def update_bank_account(self, request, bank_account_id: int, payload: BankAccountPut):
         try:
             current_bank_account = get_object_or_404(BankAccount, pk=bank_account_id)
@@ -234,7 +258,7 @@ class ReservationController:
         return True
     
     @http_get('/{reservation_id}', response=ReservationOut)
-    def get_a_reservation_by_id(self, request, reservation_id: int):
+    def get_reservation_by_id(self, request, reservation_id: int):
         reservations = get_object_or_404(Reservation, pk=reservation_id)
         reservations = reservations.check_expired_conflict()
         return reservations
