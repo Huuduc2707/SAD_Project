@@ -34,7 +34,7 @@ export const userApi = {
     return baseApi.post<ApiUserTokenResponse>("/api/user/signup", variables);
   },
   getCurrentUser(token?: string) {
-    return baseApi.get<User>("/api/user", {
+    return baseApi.get<User>("/api/user", undefined, {
       headers: {
         ...(token && { Authorization: `Bearer ${token}` }),
       },

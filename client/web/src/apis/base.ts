@@ -9,8 +9,8 @@ export const baseApi = {
     const res = await fetch(path, {
       ...options,
       headers: {
-        ...options.headers,
         ...this.getAuthHeader(),
+        ...options.headers,
       },
     });
 
@@ -25,13 +25,14 @@ export const baseApi = {
 
     return res.text() as Promise<D>;
   },
-  async get<D = any>(path: string, params?: any) {
+  async get<D = any>(path: string, params?: any, options?: RequestInit) {
     const url = new URL(`${path}`, window.location.origin);
     if (params) {
       url.search = new URLSearchParams(params).toString();
     }
     return this.request<D>(url, {
       method: "GET",
+      ...options,
     });
   },
   async post<D = any>(path: string, data: any) {

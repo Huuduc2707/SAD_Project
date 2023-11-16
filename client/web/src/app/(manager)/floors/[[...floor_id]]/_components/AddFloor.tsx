@@ -25,9 +25,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
-  floor_index: z.number().int().nonnegative({
-    message: "Floor index must be a non-negative integer",
-  }),
   floor_name: z.string().min(1, {
     message: "Floor name cannot be empty",
   }),
@@ -63,13 +60,15 @@ const AddFloorForm: React.FC<{
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      floor_index: floors?.length || 0,
       floor_name: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    mutation.mutate(values);
+    mutation.mutate({
+      ...values,
+      floor_index: floors?.length ?? 0,
+    });
   }
 
   return (
@@ -78,19 +77,6 @@ const AddFloorForm: React.FC<{
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full flex gap-2 flex-col"
       >
-        <FormField
-          control={form.control}
-          name="floor_index"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Floor index</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="floor_name"

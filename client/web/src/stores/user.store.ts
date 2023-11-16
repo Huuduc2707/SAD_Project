@@ -29,7 +29,6 @@ export const useUserStore = create(
       onRehydrateStorage(state) {
         console.log("onRehydrateStorage", state);
         if (state.token) {
-          console.log(`here`);
           baseApi.token = state.token;
           userApi
             .getCurrentUser()
