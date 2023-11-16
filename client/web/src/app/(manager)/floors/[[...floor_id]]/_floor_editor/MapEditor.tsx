@@ -50,14 +50,16 @@ const SlotBlock: FC<{
     <ContextMenu>
       <ContextMenuTrigger asChild>
         <div
-          className="block absolute border border-primary bg-card"
+          className="absolute border border-accent bg-background rounded-sm shadow flex items-center justify-center"
           style={{
             top: start_y * BLOCK_SIZE,
             left: start_x * BLOCK_SIZE,
             width: (end_x - start_x) * BLOCK_SIZE,
             height: (end_y - start_y) * BLOCK_SIZE,
           }}
-        />
+        >
+          <span className="text-muted-foreground select-none">{id}</span>
+        </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem onClick={onDelete}>Delete Slot</ContextMenuItem>
@@ -106,6 +108,8 @@ export const MapEditor: FC<{ floorId: number }> = ({ floorId }) => {
     let isCreating = false;
     let startX = 0;
     let startY = 0;
+    let endX = 0;
+    let endY = 0;
     const onPointerDown = (e: PointerEvent) => {
       // only consider left click
       if (e.button !== 0) return;
@@ -115,12 +119,17 @@ export const MapEditor: FC<{ floorId: number }> = ({ floorId }) => {
       setStartXY({ x: startX, y: startY });
       setEndXY({ x: startX, y: startY });
     };
+    const onPointerMove = (e: PointerEvent) => {
+      requestAnimationFrame(() => {
+        if (!isCreating) return;
+        endX = Math.round(e.offsetX / BLOCK_SIZE);
+        endY = Math.round(e.offsetY / BLOCK_SIZE);
+        setEndXY({ x: endX, y: endY });
+      });
+    };
     const onPointerUp = (e: PointerEvent) => {
       if (!isCreating) return;
       isCreating = false;
-      const endX = Math.round(e.offsetX / BLOCK_SIZE);
-      const endY = Math.round(e.offsetY / BLOCK_SIZE);
-      setEndXY({ x: endX, y: endY });
       if (startX === endX || startY === endY) {
         setStartXY(null);
         setEndXY(null);
@@ -138,9 +147,11 @@ export const MapEditor: FC<{ floorId: number }> = ({ floorId }) => {
     if (!mapRef.current) return;
     const map = mapRef.current;
     map.addEventListener("pointerdown", onPointerDown);
+    map.addEventListener("pointermove", onPointerMove);
     map.addEventListener("pointerup", onPointerUp);
     return () => {
       map.removeEventListener("pointerdown", onPointerDown);
+      map.removeEventListener("pointermove", onPointerMove);
       map.removeEventListener("pointerup", onPointerUp);
     };
   }, [mutateCreate, floorId]);
@@ -157,7 +168,7 @@ export const MapEditor: FC<{ floorId: number }> = ({ floorId }) => {
       {/* Currently creating */}
       {startXY && endXY && (
         <div
-          className="bg-primary block"
+          className="bg-accent rounded-sm block"
           style={{
             position: "absolute",
             top: startXY.y * BLOCK_SIZE,

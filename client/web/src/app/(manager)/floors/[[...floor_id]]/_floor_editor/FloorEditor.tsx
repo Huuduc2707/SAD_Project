@@ -62,9 +62,10 @@ const FloorMetadataEditor: FC<{ floor: ParkingFloorOut }> = ({ floor }) => {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isUpdatePending) return;
+    if (!name.trim()) return;
     mutateUpdate({
       floor_id: floor.id,
-      floor_name: name,
+      floor_name: name.trim(),
       floor_index: floor.floor_index,
     });
   };
