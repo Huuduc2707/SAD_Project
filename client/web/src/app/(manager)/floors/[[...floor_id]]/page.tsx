@@ -32,8 +32,8 @@ export default function FloorsPage({
         <AddFloor floors={data} />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-4">
-        <div className="lg:col-span-1 flex overflow-auto lg:overflow-hidden lg:flex-col gap-4">
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-4">
+        <div className="col-span-full lg:col-span-1 flex overflow-auto lg:overflow-hidden lg:flex-col gap-4">
           {data?.map((floor) => (
             <Link href={`/floors/${floor.id}`} key={floor.id}>
               <FloorCard
@@ -44,9 +44,9 @@ export default function FloorsPage({
           ))}
         </div>
         {floorId && (
-          <div className="lg:col-span-3 flex gap-4">
-            <Separator orientation="vertical" />
-            <FloorEditor floorId={floorId} />
+          <div className="col-span-full lg:col-span-3 flex gap-4">
+            <Separator orientation="vertical" className="hidden lg:block" />
+            <FloorEditor floorId={Number(floorId)} />
           </div>
         )}
       </div>

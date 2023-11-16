@@ -34,6 +34,9 @@ export const floorApi = {
   createFloor(variables: ParkingFloorIn) {
     return baseApi.post<ParkingFloorOut>("/api/floors", variables);
   },
+  getFloor({ floor_id }: { floor_id: number }) {
+    return baseApi.get<ParkingFloorOut>(`/api/floors/${floor_id}`);
+  },
   updateFloor({
     floor_id,
     ...variables
