@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+import { useUserStore } from "@/stores/user.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
@@ -38,6 +39,7 @@ export default function LoginPage() {
         title: "Login successful",
         description: `Welcome back, ${data.user.name}!`,
       });
+      useUserStore.getState().login(data.access, data.user);
       router.replace("/");
     },
     onError(error) {

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Toaster } from "@/components/ui/toaster";
+import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { useUserStore } from "@/stores/user.store";
 import "@/styles/globals.css";
@@ -53,6 +54,11 @@ const NavbarUser: React.FC = () => {
 
   const onLogout = () => {
     useUserStore.getState().logout();
+
+    toast({
+      title: "Logged out",
+      description: "You have been logged out.",
+    });
   };
 
   if (!user) {

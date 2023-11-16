@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
+import { useUserStore } from "@/stores/user.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
@@ -47,6 +48,7 @@ export default function RegisterPage() {
         title: "Registration successful",
         description: `Welcome, ${data.user.name}!`,
       });
+      useUserStore.getState().login(data.access, data.user);
       router.replace("/");
     },
     onError(error) {
@@ -60,6 +62,13 @@ export default function RegisterPage() {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+      email: "",
+      name: "",
+      phone_number: "",
+    },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -125,6 +134,19 @@ export default function RegisterPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone_number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone number</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>

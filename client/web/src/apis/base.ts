@@ -1,5 +1,3 @@
-import { API_URL } from "@/constants/config";
-
 export const baseApi = {
   token: "",
   getAuthHeader(): HeadersInit {
@@ -14,7 +12,6 @@ export const baseApi = {
         ...options.headers,
         ...this.getAuthHeader(),
       },
-      credentials: "same-origin",
     });
 
     if (!res.ok) {
@@ -29,7 +26,7 @@ export const baseApi = {
     return res.text() as Promise<D>;
   },
   async get<D = any>(path: string, params?: any) {
-    const url = new URL(`${API_URL}${path}`);
+    const url = new URL(`${path}`, window.location.origin);
     if (params) {
       url.search = new URLSearchParams(params).toString();
     }
@@ -38,7 +35,7 @@ export const baseApi = {
     });
   },
   async post<D = any>(path: string, data: any) {
-    return this.request<D>(`${API_URL}${path}`, {
+    return this.request<D>(`${path}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,7 +44,7 @@ export const baseApi = {
     });
   },
   async put<D = any>(path: string, data: any) {
-    return this.request<D>(`${API_URL}${path}`, {
+    return this.request<D>(`${path}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +53,7 @@ export const baseApi = {
     });
   },
   async delete<D = any>(path: string) {
-    return this.request<D>(`${API_URL}${path}`, {
+    return this.request<D>(`${path}`, {
       method: "DELETE",
     });
   },

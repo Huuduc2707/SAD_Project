@@ -7,12 +7,12 @@ export interface ApiUserTokenResponse {
   user: User;
 }
 
-export interface ApiUserLoginVariables {
+export interface UserTokenObtainSchema {
   username: string;
   password: string;
 }
 
-export interface ApiUserSignupVariables {
+export interface CustomerRegisterRequest {
   username: string;
   password: string;
   email: string;
@@ -20,14 +20,27 @@ export interface ApiUserSignupVariables {
   phone_number: string;
 }
 
+export interface CustomerProfileRequest {
+  email: string;
+  name: string;
+  phone_number: string;
+}
+
 export const userApi = {
-  login(variables: ApiUserLoginVariables) {
+  login(variables: UserTokenObtainSchema) {
     return baseApi.post<ApiUserTokenResponse>("/api/user/login", variables);
   },
-  signup(variables: ApiUserSignupVariables) {
+  signup(variables: CustomerRegisterRequest) {
     return baseApi.post<ApiUserTokenResponse>("/api/user/signup", variables);
   },
-  getCurrentUser() {
-    return baseApi.get<User>("/api/user");
+  getCurrentUser(token?: string) {
+    return baseApi.get<User>("/api/user", {
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+    });
+  },
+  editUserProfile(variables: CustomerProfileRequest) {
+    return baseApi.put<User>("/api/user/edit_profile", variables);
   },
 };

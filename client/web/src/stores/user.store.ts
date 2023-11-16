@@ -27,18 +27,21 @@ export const useUserStore = create(
       name: "user-storage",
       storage: createJSONStorage(() => window?.localStorage),
       onRehydrateStorage(state) {
+        console.log("onRehydrateStorage", state);
         if (state.token) {
+          console.log(`here`);
           baseApi.token = state.token;
           userApi
             .getCurrentUser()
             .then((user) => {
               useUserStore.setState({ user });
             })
-            .catch(() => {
+            .catch((err) => {
               useUserStore.setState({ user: null, token: null });
             });
         }
       },
+      skipHydration: true,
     },
   ),
 );
