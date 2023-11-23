@@ -127,7 +127,6 @@ const Navbar: React.FC = () => {
         </Link>
         <div className="flex items-center justify-start gap-4 flex-1">
           <NavbarLink href="/check-ins">Check-ins</NavbarLink>
-          <NavbarLink href="/reservations">Reservations</NavbarLink>
           <NavbarLink href="/floors">Floors</NavbarLink>
           <NavbarLink href="/vehicle-types">Vehicle Types</NavbarLink>
         </div>
@@ -159,7 +158,7 @@ export default function RootLayout({
         className={cn(
           "min-h-screen bg-background font-sans antialiased opacity-0 transition-opacity",
           hydrated && `opacity-100`,
-          fontSans.variable,
+          fontSans.variable
         )}
       >
         <QueryClientProvider client={queryClient}>
