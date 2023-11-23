@@ -14,6 +14,7 @@ export const VehicleTypeCard: React.FC<{
       <CardHeader className="flex flex-row items-start justify-between space-y-0">
         <div className="flex flex-col space-y-1.5">
           <CardTitle>{vehicleType.name}</CardTitle>
+          <CardDescription>ID: {vehicleType.id}</CardDescription>
           <CardDescription>Fee: {vehicleType.hourly_fee}</CardDescription>
         </div>
       </CardHeader>

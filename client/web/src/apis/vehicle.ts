@@ -15,6 +15,9 @@ export const vehicleTypeApi = {
   getListVehicleType() {
     return baseApi.get<VehicleTypeOut[]>("/api/vehicle_types");
   },
+  getVehicleType({ vehicle_type_id }: { vehicle_type_id: number }) {
+    return baseApi.get<VehicleTypeOut>(`/api/vehicle_types/${vehicle_type_id}`);
+  },
   createVehicleType(variables: VehicleTypeTypeIn) {
     return baseApi.post<VehicleTypeOut>("/api/vehicle_types", variables);
   },

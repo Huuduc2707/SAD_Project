@@ -2,6 +2,7 @@
 
 import { vehicleTypeApi } from "@/apis/vehicle";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { AddVehicleType } from "./_components/AddVehicleType";
 import { VehicleTypeCard } from "./_components/VehicleTypeCard";
 
@@ -24,7 +25,9 @@ export default function VehicleTypesPage() {
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {data?.map((vehicleType) => (
-          <VehicleTypeCard key={vehicleType.id} vehicleType={vehicleType} />
+          <Link href={`/vehicle-types/${vehicleType.id}`} key={vehicleType.id}>
+            <VehicleTypeCard vehicleType={vehicleType} />
+          </Link>
         ))}
       </div>
     </div>
