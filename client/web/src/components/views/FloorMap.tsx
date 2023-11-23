@@ -1,7 +1,7 @@
 import { ParkingSlotOut } from "@/apis/floor";
 import { FC, useRef } from "react";
 import { twMerge } from "tailwind-merge";
-import styles from "./MapEditor.module.css";
+import styles from "./FloorMap.module.css";
 
 const BLOCK_SIZE = 24; // pixels
 
