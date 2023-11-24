@@ -52,7 +52,7 @@ export const floorApi = {
   createSlot({ floor_id, ...variables }: ParkingSlotIn & { floor_id: number }) {
     return baseApi.post<ParkingSlotOut>(
       `/api/floors/${floor_id}/slots`,
-      variables,
+      variables
     );
   },
   updateSlot({
@@ -62,7 +62,7 @@ export const floorApi = {
   }: ParkingSlotIn & { floor_id: number; slot_id: number }) {
     return baseApi.put<ParkingSlotOut>(
       `/api/floors/${floor_id}/slots/${slot_id}`,
-      variables,
+      variables
     );
   },
   deleteSlot({ floor_id, slot_id }: { floor_id: number; slot_id: number }) {

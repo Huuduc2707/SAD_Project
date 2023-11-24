@@ -1,6 +1,6 @@
 "use client";
 
-import { floorApi } from "@/apis/floor";
+import { ParkingSlotOut, floorApi } from "@/apis/floor";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -15,6 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { baseApi } from "@/apis/base";
+import { reservationApi } from "@/apis/reservation";
+import { BookedSlotCard } from "./_components/BookedSlotCard";
 
 const GetFloorDetail = ({ floor_id }: { floor_id: number }) => {
   const { data } = useQuery({
@@ -23,6 +26,41 @@ const GetFloorDetail = ({ floor_id }: { floor_id: number }) => {
   });
 
   return data && <FloorMap floorId={floor_id} slots={data} />;
+};
+
+const GetBookingList = ({ floor_id }: { floor_id: number }) => {
+  const { data } = useQuery({
+    queryKey: ["reservations", "floor", floor_id],
+    queryFn: () => reservationApi.getListFloor(floor_id),
+  });
+  return (
+    <div className="flex flex-col gap-2 items-start justify-start">
+      {data?.map((reservation, index) => {
+        console.log(reservation);
+        return (
+          <BookedSlotCard
+            key={index}
+            slotId={reservation.slot.id}
+            plateNumber={reservation.vehicle.plate_number}
+            time={reservation.time_booked}
+          />
+        );
+      })}
+      {/* 
+      <BookedSlotCard
+        key={2}
+        slotId={24}
+        plateNumber={"23fsgred"}
+        time={"12/22/2023 12:00 PM"}
+      />
+      <BookedSlotCard
+        key={2}
+        slotId={24}
+        plateNumber={"23fsgred"}
+        time={"12/22/2023 12:00 PM"}
+      /> */}
+    </div>
+  );
 };
 
 export default function CheckInsPage({
@@ -53,7 +91,7 @@ export default function CheckInsPage({
         </div>
         <Select value={String(floorId)} onValueChange={chooseFloor}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Theme" />
+            <SelectValue placeholder="Choose a floor" />
           </SelectTrigger>
           <SelectContent>
             {data?.map((floor) => {
@@ -69,10 +107,20 @@ export default function CheckInsPage({
 
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-4">
         {floorId && (
-          <div className="col-span-full lg:col-span-3 flex gap-4">
-            {/* <Separator orientation="vertical" className="hidden lg:block" /> */}
-            <GetFloorDetail floor_id={floorId} />
-          </div>
+          <>
+            <div className="col-span-full lg:col-span-3 flex gap-4 pb-10">
+              <GetFloorDetail floor_id={floorId} />
+              {/* <Separator orientation="vertical" className="hidden lg:block" /> */}
+            </div>
+            <div className="col-span-full lg:col-span-1 flex flex-col gap-4">
+              <h2 className="text-2xl font-bold tracking-tight">
+                Reservation list
+              </h2>
+              <div className=" overflow-y-auto h-1/2">
+                <GetBookingList floor_id={floorId} />
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>
