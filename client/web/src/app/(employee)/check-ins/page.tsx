@@ -38,12 +38,14 @@ const GetBookingList = ({ floor_id }: { floor_id: number }) => {
       {data?.map((reservation, index) => {
         console.log(reservation);
         return (
-          <BookedSlotCard
-            key={index}
-            slotId={reservation.slot.id}
-            plateNumber={reservation.vehicle.plate_number}
-            time={reservation.time_booked}
-          />
+          reservation.status === "A" && (
+            <BookedSlotCard
+              key={index}
+              slotId={reservation.slot.id}
+              plateNumber={reservation.vehicle.plate_number}
+              time={reservation.time_booked}
+            />
+          )
         );
       })}
       {/* 

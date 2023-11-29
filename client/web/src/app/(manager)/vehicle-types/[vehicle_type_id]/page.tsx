@@ -208,7 +208,7 @@ export default function VehicleTypePage({
   }
 
   return (
-    <div className="container space-y-4">
+    <div className="container space-y-4 flex flex-col items-center">
       <div className="flex py-4 justify-between items-center">
         <div className="space-y-0.5">
           <h2 className="text-2xl font-bold tracking-tight">{data.name}</h2>

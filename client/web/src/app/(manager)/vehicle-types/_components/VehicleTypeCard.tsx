@@ -15,7 +15,9 @@ export const VehicleTypeCard: React.FC<{
         <div className="flex flex-col space-y-1.5">
           <CardTitle>{vehicleType.name}</CardTitle>
           <CardDescription>ID: {vehicleType.id}</CardDescription>
-          <CardDescription>Fee: {vehicleType.hourly_fee}</CardDescription>
+          <CardDescription>
+            Fee: ${vehicleType.hourly_fee} /hour
+          </CardDescription>
         </div>
       </CardHeader>
     </Card>
