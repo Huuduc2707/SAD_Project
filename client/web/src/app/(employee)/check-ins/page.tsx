@@ -1,13 +1,7 @@
 "use client";
 
-import { ParkingSlotOut, floorApi } from "@/apis/floor";
-import { Separator } from "@/components/ui/separator";
-import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
-import { FloorCard } from "./_components/FloorCard";
-import { FloorEditor } from "./_floor_editor/FloorEditor";
-import { FloorMap } from "@/components/views/FloorMap";
-import { useState } from "react";
+import { floorApi } from "@/apis/floor";
+import { reservationApi } from "@/apis/reservation";
 import {
   Select,
   SelectContent,
@@ -15,8 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { baseApi } from "@/apis/base";
-import { reservationApi } from "@/apis/reservation";
+import { FloorMap } from "@/components/views/FloorMap";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { BookedSlotCard } from "./_components/BookedSlotCard";
 
 const GetFloorDetail = ({ floor_id }: { floor_id: number }) => {
@@ -70,17 +65,23 @@ export default function CheckInsPage({
 }: {
   params: { floor_id: string[] };
 }) {
+  // useState floorId
+  const [floorId, setFloorId] = useState<number | null>(null);
+
   const { data } = useQuery({
     queryKey: ["floors"],
     queryFn: floorApi.getListFloor,
   });
 
-  // useState floorId
-  const [floorId, setFloorId] = useState<number | null>(null);
-
   const chooseFloor = (newvalue: string) => {
     setFloorId(Number(newvalue));
   };
+
+  useEffect(() => {
+    if (data?.length) {
+      setFloorId((f) => (typeof f === "number" ? f : Number(data[0].id)));
+    }
+  }, [data]);
 
   return (
     <div className="container">
