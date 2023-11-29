@@ -31,7 +31,6 @@ const GetBookingList = ({ floor_id }: { floor_id: number }) => {
   return (
     <div className="flex flex-col gap-2 items-start justify-start">
       {data?.map((reservation, index) => {
-        console.log(reservation);
         return (
           reservation.status === "A" && (
             <BookedSlotCard
