@@ -43,7 +43,7 @@ export const FloorMap: FC<{
       ref={mapRef}
       className={twMerge(
         "w-[1440px] h-[1440px] relative border-[4px]",
-        styles.bg
+        styles.bg,
       )}
     >
       {/* Existing slots */}

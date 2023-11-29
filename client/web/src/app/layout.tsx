@@ -158,7 +158,7 @@ export default function RootLayout({
         className={cn(
           "min-h-screen bg-background font-sans antialiased opacity-0 transition-opacity",
           hydrated && `opacity-100`,
-          fontSans.variable
+          fontSans.variable,
         )}
       >
         <QueryClientProvider client={queryClient}>
