@@ -153,12 +153,14 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        <title>SmartParking</title>
+      </head>
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased opacity-0 transition-opacity",
           hydrated && `opacity-100`,
-          fontSans.variable,
+          fontSans.variable
         )}
       >
         <QueryClientProvider client={queryClient}>
